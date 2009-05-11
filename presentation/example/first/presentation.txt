@@ -75,8 +75,7 @@ PHPresentation / Images
 You can add images to slides
 Supported formats is JPEG, PNG, GIF and SVG!
 
-[-IMAGE-]
-Feed-icon.svg
+[-IMAGE|Feed-icon.svg-]
 
 ---slide---
 [-TITLE-]

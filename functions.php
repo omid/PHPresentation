@@ -120,7 +120,7 @@ function parse_presentation()
                     break;
     
                 case 'IMAGE':
-                    $g['slide'] .= gen_image($body);
+                    $g['slide'] .= gen_image($head[1]);
                     break;
                 
                 case 'PATH':
