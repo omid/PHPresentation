@@ -6,7 +6,7 @@ function find_path()
     // go to find a presentation.txt :>
     if(!is_file("{$g['base_path']}/presentation.txt")){
         $paths = glob("./presentation/{$_GET['dir']}/*");
-        
+
         $has_dir = false;
         $body = '<ul>';
         foreach ($paths as $filename) {
@@ -15,15 +15,19 @@ function find_path()
                 $filename = substr($filename, strrpos($filename, '/') + 1);
                 $name = explode('_', $filename);
                 $name = "{$name[0]} ({$name[1]})";
-                $body .= "<li><a href=\"{$g['weburl']}/{$_GET['dir']}/{$filename}\">{$name}</a></li>";
+                if(isset($_SERVER['RW'])){
+                   $body .= "<li><a href=\"{$g['weburl']}/{$_GET['dir']}/{$filename}\">{$name}</a></li>";
+                } else {
+                   $body .= "<li><a href=\"{$g['weburl']}/index.php?dir={$_GET['dir']}/{$filename}\">{$name}</a></li>";
+                }
             }
         }
         $body .= '</ul>';
-        
+
         if(!$has_dir && !is_file("{$base_path}/presentation.txt")){
             print_html('ERROR', 'There is not any presentation file here!');
         }
-        
+
         print_html('Choose', $body);
     }
 }
@@ -31,12 +35,12 @@ function find_path()
 function print_output()
 { // generating output
     global $g;
-    
+
     $g['of'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    
+
     <html xmlns="http://www.w3.org/1999/xhtml">
-    
+
     <head>
     <title>' . $g['title'] . '</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -58,37 +62,37 @@ function print_output()
     <div id="currentSlide"><!-- DO NOT EDIT --></div>
     <div id="header"></div>
     <div id="footer"></div>
-    
+
     </div>
     <div class="presentation">' . $g['of'] . '</div>
     </body>
     </html>';
-    
+
     echo $g['of'];
 }
 
 function parse_presentation()
 { // open presentation.txt and parse it
     global $g;
-    
+
     $g['if'] = file_get_contents("{$g['base_path']}/presentation.txt");
-    
+
     // split slides and main page!
     $g['if'] = explode('---slide---', $g['if']);
     $g['main'] = true;
-    
+
     foreach($g['if'] as $sl){
-    
+
         $sl = preg_split('#\[-(.+?)\-]#', trim($sl), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
         $g['slide'] = '';
-        
+
         while(count($sl)){
-    
+
             $head = trim(array_shift($sl));
             $body = trim(array_shift($sl));
-    
+
             $head = explode('|', $head);
-            
+
             switch($head[0]){
                 case 'BGCOLOR':
                     if($g['main']){
@@ -98,19 +102,19 @@ function parse_presentation()
                         $g['slidebg'] = $head[1];
                     }
                     break;
-    
+
                 case 'TEXT':
                     $g['slide'] .= gen_text(nl2br($body));
                     break;
-    
+
                 case 'LIST':
                     $g['slide'] .= gen_list($body);
                     break;
-    
+
                 case 'CODE':
                     $g['slide'] .= gen_code($body, $head[1], $head[2]);
                     break;
-    
+
                 case 'TITLE':
                     if($g['main']){
                         $g['title'] = $body;
@@ -118,34 +122,34 @@ function parse_presentation()
                         $g['slide'] .= gen_title(nl2br($body));
                     }
                     break;
-    
+
                 case 'IMAGE':
                     $g['slide'] .= gen_image($head[1]);
                     break;
-                
+
                 case 'PATH':
                     $g['slide'] .= gen_path(nl2br($body));
                     break;
-                
+
                 case 'IFRAME':
                     $g['slide'] .= gen_iframe($head[1], $head[2]);
                     break;
-                
+
                 case 'BR':
                     $g['slide'] .= gen_br();
                     break;
-                
+
                 case 'HTML':
                     $g['slide'] .= gen_html($body);
                     break;
             }
         }
-    
+
         // if bg is not set, use default
         if(!isset($g['slidebg'])){
             $g['slidebg'] = $g['mainbg'];
         }
-    
+
         if($g['main']){
             $g['main'] = false;
         }else{
@@ -174,9 +178,9 @@ function gen_title($body)
 function gen_image($body)
 {
     global $g;
-    
+
     $ext = substr($body, strrpos($body, '.') + 1);
-    
+
     if ( $ext == 'svg'){
         return '<div class="img"><embed src="' . "{$g['weburl']}/{$g['base_path']}/images/{$body}" . '" type="image/svg+xml"/></div>';
     } else {
@@ -193,21 +197,21 @@ function gen_code($body, $code='php-brief', $lines)
 {
     require_once('geshi/geshi.php');
     global $g;
-    
+
     $geshi = new GeSHi(trim(file_get_contents("{$g['base_path']}/codes/{$body}")), $code);
-    
+
     if(count($lines)){
         $geshi->highlight_lines_extra(explode(',', $lines));
         $geshi->set_highlight_lines_extra_style('background: #220');
     }
-    
+
     $geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
     $geshi->set_line_style('margin: 3px 0;');
-    
+
     $geshi->set_header_content_style('font-size: 0.8em; color: #333');
     $geshi->set_header_type(GESHI_HEADER_DIV);
     $geshi->set_header_content('Filename: ' . $body);
-    
+
     return '<div class="code">' . $geshi->parse_code() . '</div>';
 }
 
