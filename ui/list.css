@@ -1,0 +1,33 @@
+body {
+    background-color: #211E1E;
+    margin: 20px;
+}
+
+h1 {
+    font-family: "verdana", sans;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #403B3B;
+    border: 2px solid #332F2F;
+    -moz-border-radius: 5px;
+    padding: 10px;
+    color: #0D0C0C;
+}
+
+.body {
+    background-color: #595252;
+    border: 2px solid #332F2F;
+    -moz-border-radius: 5px;
+    padding: 10px;
+    min-height: 300px;
+}
+
+.body ul, .body ul li, .body ul li a {
+    font-family: "verdana", sans;
+    font-size: 16px;
+    color: #D9C7C7;
+    text-decoration: none;
+    list-style: none;
+    padding: 0 0 0 10px;
+    margin: 0;
+}
