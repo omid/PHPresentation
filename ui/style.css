@@ -1,10 +1,11 @@
 body{
+    direction: rtl;
 }
 
 div.code{
     direction: ltr;
     font-family: monospace;
-    font-size: smaller;
+    font-size: 0.55em;
 }
 
 div.path{
@@ -14,6 +15,18 @@ div.path{
     color: #E87F8C;
     margin: 0;
     padding: 15px 0 0 0;
+}
+
+div.terminal{
+    direction: ltr;
+    font-family: monospace;
+    font-size: 9pt;
+    color: #fff;
+    margin: 10px 0;
+    padding: 15px;
+    background-color: black;
+    border: 3px ridge #bbb;
+    overflow: hidden;
 }
 
 div.img {
@@ -26,11 +39,20 @@ embed {
     height: 100%;
     overflow: hidden;
 }
+
 iframe {
     margin: 15px 0;
     width: 100%;
-    height: 200px;
     background-color: #fff;
     border: 3px solid #97D356;
     -moz-border-radius: 7px;
+}
+
+div#anim img {
+	display: block;
+	margin: 20px auto;
+}
+
+div#anim img.old {
+	display: none;
 }

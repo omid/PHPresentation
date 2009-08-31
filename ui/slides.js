@@ -154,8 +154,9 @@ function go(step) {
     } else
         snum = parseInt(jl.value);
     var nid = 'slide' + snum;
-    // omid was here
+    //// omid was here
     window.location = window.location.toString().substr(0, window.location.toString().indexOf('#')) + '#' + nid;
+    ////
     var ne = document.getElementById(nid);
     if (!ne) {
         ne = document.getElementById('slide0');
@@ -193,6 +194,9 @@ function goTo(target) {
 function subgo(step) {
     if (step > 0) {
         removeClass(incrementals[snum][incpos - 1],'current');
+	//// omid was here
+        addClass(incrementals[snum][incpos - 1],'old');
+	////
         removeClass(incrementals[snum][incpos], 'incremental');
         addClass(incrementals[snum][incpos],'current');
         incpos++;
@@ -200,6 +204,9 @@ function subgo(step) {
         incpos--;
         removeClass(incrementals[snum][incpos],'current');
         addClass(incrementals[snum][incpos], 'incremental');
+	//// omid was here
+        removeClass(incrementals[snum][incpos - 1],'old');
+	////
         addClass(incrementals[snum][incpos - 1],'current');
     }
     loadNote();
@@ -759,8 +766,15 @@ function startup() {
     }
     document.onkeyup = keys;
     document.onkeypress = trap;
-    document.onclick = clicker;
+    document.onclick = clicker;	
 }
+
+// omid was here
+function oniframeload(x){
+	x.contentDocument.body.style.backgroundColor="white";
+	x.style.height = x.contentDocument.body.offsetHeight + 20 + "px";
+}
+////////////////
 
 window.onload = startup;
 window.onresize = function(){setTimeout('windowChange()',5);}
