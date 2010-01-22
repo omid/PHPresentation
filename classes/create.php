@@ -2,7 +2,7 @@
 class create
 {
     private $var;       // an array to store variables of plugins
-    private $slides;    // an string to store slides
+    private $slides;    // a string to store slides
     
     function __construct()
     {
@@ -14,7 +14,7 @@ class create
     { // open presentation.txt and parse it
         global $g;
         
-        $this->path = 'presentation/PHP (Intermediate) 6 R1/Session_1/';
+        $this->path = 'presentation/example/first/';
         $if = file_get_contents("{$this->path}presentation.txt");
         
         // split slides and main page!
@@ -27,7 +27,7 @@ class create
             
             $sl = preg_split('#\[-(.+?)\-]#', trim($sl), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
             
-            $this->slides .= $slide_no++;
+            $this->slides .= '<fieldset>Slide ' . $slide_no++;
             $this->slides .= '<hr/>';
             while(count($sl)){
     
@@ -43,6 +43,7 @@ class create
                     // find this variable's array in that plugin!
                     $var_array = $this->find_var_by_name($cmd, $dummy_p[0]);
                     $var_array['value'] = $dummy_p[1];
+                    $var_array['command'] = $cmd;
                     
                     $this->slides .= "{$var_array['name']}: " . $this->generate_var_type($var_array) . '<br/>';
                 }
@@ -54,7 +55,7 @@ class create
             if(!isset($g['slidebg'])){
                 $g['slidebg'] = $g['mainbg'];
             }
-            
+            $this->slides .= '</fieldset>';
             $this->slides .= '<hr/>';
         }
         
@@ -96,14 +97,25 @@ class create
                 $ret = $gen->text($var_array);
                 break;
             case 'file':
-                $ret = $gen->file($var_array, $this->path);
+                if($var_array['command'] == 'image'){
+                    $ret = $gen->image($var_array, $this->path);
+                } elseif($var_array['command'] == 'iframe'){
+                    $ret = $gen->iframe($var_array, $this->path);
+                }
                 break;
             case 'select':
                 $ret = $gen->select($var_array);
                 break;
+            default:
+                $ret = '';
         }
         unset($gen);
         return $ret;
+    }
+
+    function save()
+    {
+        
     }
 }
 ?>

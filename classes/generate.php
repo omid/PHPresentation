@@ -7,9 +7,14 @@ class generate
         return "<input type=\"text\" value=\"{$var_array['value']}\" />";
     }
     
-    function file($var_array, $path)
+    function image($var_array, $path)
     {
         return "<input type=\"file\" /><img src=\"{$path}images/{$var_array['value']}\"/>";
+    }
+
+    function iframe($var_array, $path)
+    {
+        return "<input type=\"file\" /><iframe src=\"{$path}/{$var_array['value']}\"></iframe>";
     }
     
     function select($var_array)
